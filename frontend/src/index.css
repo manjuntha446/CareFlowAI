@@ -1,0 +1,154 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* ── Login page animations ── */
+@keyframes loginFadeIn {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes loginSlideIn {
+  from { opacity: 0; transform: translateX(12px); }
+  to   { opacity: 1; transform: translateX(0); }
+}
+@keyframes loginShake {
+  0%, 100% { transform: translateX(0); }
+  20%       { transform: translateX(-6px); }
+  40%       { transform: translateX(6px); }
+  60%       { transform: translateX(-4px); }
+  80%       { transform: translateX(4px); }
+}
+.login-fade-in  { animation: loginFadeIn  0.55s ease both; }
+.login-slide-in { animation: loginSlideIn 0.30s ease both; }
+.login-shake    { animation: loginShake   0.40s ease both; }
+
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+
+/* ═══════════════════════════════════════════════════════════════
+   DARK MODE — Applied when any ancestor has class "dark-mode"
+   ═══════════════════════════════════════════════════════════════ */
+
+/* ── Layout ── */
+.dark-mode .bg-white          { background-color: #1f2937 !important; }
+.dark-mode .bg-gray-50        { background-color: #374151 !important; }
+.dark-mode .bg-gray-100       { background-color: #374151 !important; }
+.dark-mode .bg-gray-200       { background-color: #4b5563 !important; }
+.dark-mode .bg-gray-50\/40    { background-color: rgba(55,65,81,0.4) !important; }
+.dark-mode .bg-blue-50\/30    { background-color: rgba(30,58,138,0.15) !important; }
+.dark-mode .bg-blue-50\/40    { background-color: rgba(30,58,138,0.2) !important; }
+
+/* ── Subtle icon / info backgrounds ── */
+.dark-mode .bg-blue-50        { background-color: rgba(30,58,138,0.35) !important; }
+.dark-mode .bg-red-50         { background-color: rgba(127,29,29,0.25) !important; }
+.dark-mode .bg-yellow-50      { background-color: rgba(113,63,18,0.3) !important; }
+.dark-mode .bg-green-50       { background-color: rgba(20,83,45,0.3) !important; }
+.dark-mode .bg-purple-50      { background-color: rgba(88,28,135,0.3) !important; }
+.dark-mode .bg-indigo-50      { background-color: rgba(49,46,129,0.3) !important; }
+
+/* ── Badge / triage / status backgrounds ── */
+.dark-mode .bg-blue-100       { background-color: rgba(30,58,138,0.4) !important; }
+.dark-mode .bg-red-100        { background-color: rgba(127,29,29,0.4) !important; }
+.dark-mode .bg-yellow-100     { background-color: rgba(113,63,18,0.4) !important; }
+.dark-mode .bg-green-100      { background-color: rgba(20,83,45,0.4) !important; }
+.dark-mode .bg-purple-100     { background-color: rgba(88,28,135,0.4) !important; }
+.dark-mode .bg-indigo-100     { background-color: rgba(49,46,129,0.4) !important; }
+.dark-mode .bg-orange-100     { background-color: rgba(124,45,18,0.4) !important; }
+
+/* ── Main text ── */
+.dark-mode .text-gray-900     { color: #f9fafb !important; }
+.dark-mode .text-gray-800     { color: #f3f4f6 !important; }
+.dark-mode .text-gray-700     { color: #e5e7eb !important; }
+.dark-mode .text-gray-600     { color: #d1d5db !important; }
+.dark-mode .text-gray-500     { color: #9ca3af !important; }
+.dark-mode .text-gray-400     { color: #6b7280 !important; }
+
+/* ── Colored text on dark backgrounds ── */
+.dark-mode .text-blue-900     { color: #bfdbfe !important; }
+.dark-mode .text-blue-700     { color: #93c5fd !important; }
+.dark-mode .text-blue-800     { color: #93c5fd !important; }
+.dark-mode .text-red-800      { color: #fca5a5 !important; }
+.dark-mode .text-yellow-800   { color: #fde68a !important; }
+.dark-mode .text-green-800    { color: #86efac !important; }
+.dark-mode .text-purple-800   { color: #d8b4fe !important; }
+.dark-mode .text-indigo-800   { color: #a5b4fc !important; }
+.dark-mode .text-orange-800   { color: #fdba74 !important; }
+
+/* ── Borders ── */
+.dark-mode .border-gray-100   { border-color: #374151 !important; }
+.dark-mode .border-gray-200   { border-color: #4b5563 !important; }
+.dark-mode .border-gray-300   { border-color: #4b5563 !important; }
+.dark-mode .border-blue-100   { border-color: rgba(30,58,138,0.35) !important; }
+.dark-mode .border-blue-200   { border-color: rgba(37,99,235,0.4) !important; }
+.dark-mode .border-red-200    { border-color: rgba(185,28,28,0.4) !important; }
+.dark-mode .border-red-300    { border-color: rgba(185,28,28,0.5) !important; }
+.dark-mode .border-yellow-300 { border-color: rgba(161,98,7,0.5) !important; }
+.dark-mode .border-green-300  { border-color: rgba(21,128,61,0.5) !important; }
+
+/* ── Hover states ── */
+.dark-mode .hover\:bg-gray-100:hover  { background-color: rgba(55,65,81,0.8) !important; }
+.dark-mode .hover\:bg-gray-300:hover  { background-color: #6b7280 !important; }
+.dark-mode .hover\:bg-blue-50:hover   { background-color: rgba(30,58,138,0.25) !important; }
+.dark-mode .hover\:bg-blue-50\/40:hover { background-color: rgba(30,58,138,0.2) !important; }
+.dark-mode .hover\:shadow-md:hover    {
+  box-shadow: 0 4px 6px -1px rgba(0,0,0,0.4), 0 2px 4px -2px rgba(0,0,0,0.4) !important;
+}
+
+/* ── Form controls ── */
+.dark-mode input,
+.dark-mode select,
+.dark-mode textarea {
+  background-color: #374151 !important;
+  border-color: #4b5563 !important;
+  color: #f3f4f6 !important;
+}
+.dark-mode input::placeholder,
+.dark-mode textarea::placeholder {
+  color: #9ca3af !important;
+}
+.dark-mode select option {
+  background-color: #374151;
+  color: #f3f4f6;
+}
+
+/* ── HR / divider ── */
+.dark-mode hr { border-color: #374151 !important; }
+
+/* ── Recharts chart theming ── */
+.dark-mode .recharts-cartesian-axis-tick-value {
+  fill: #9ca3af !important;
+}
+.dark-mode .recharts-cartesian-grid-horizontal line,
+.dark-mode .recharts-cartesian-grid-vertical line {
+  stroke: #374151 !important;
+}
+.dark-mode .recharts-legend-item-text {
+  color: #d1d5db !important;
+}
+.dark-mode .recharts-layer text {
+  fill: #d1d5db !important;
+}
+.dark-mode .recharts-tooltip-wrapper .recharts-default-tooltip {
+  background-color: #1f2937 !important;
+  border-color: #374151 !important;
+  color: #f3f4f6 !important;
+}
+.dark-mode .recharts-tooltip-item {
+  color: #d1d5db !important;
+}
+.dark-mode .recharts-tooltip-label {
+  color: #f3f4f6 !important;
+}
