@@ -6,7 +6,6 @@ const path = require('path');
 const https = require('https');
 const fs = require('fs');
 
-
 // Load environment variables
 require('dotenv').config({
   path: path.join(__dirname, '.env')
@@ -14,8 +13,6 @@ require('dotenv').config({
 
 const app = express();
 
-// Behind a reverse proxy (Render / Vercel) this makes req.ip reflect the real
-// client so rate limiting works per-client instead of per-proxy.
 app.set('trust proxy', 1);
 
 // Middleware
@@ -35,7 +32,7 @@ const usersRouter = require('./routes/users');
 const reportsRouter = require('./routes/reports');
 const { rateLimit } = require('./middleware/rateLimit');
 
-// ---- Rate limiting on sensitive authentication endpoints ----
+// Rate limiting
 const loginLimiter = rateLimit({
   windowMs: 15 * 60 * 1000,
   max: 20,
@@ -48,7 +45,6 @@ const registerLimiter = rateLimit({
   message: 'Too many accounts created from this device. Please try later.'
 });
 
-// These must be registered BEFORE the auth router so they run first.
 app.use('/api/auth/login', loginLimiter);
 app.use('/api/auth/google', loginLimiter);
 app.use('/api/auth/register', registerLimiter);
@@ -74,7 +70,7 @@ app.get('/', (req, res) => {
   });
 });
 
-// Error handling middleware
+// Error handling
 app.use((err, req, res, next) => {
   console.error('Server error:', err.stack);
 
@@ -83,57 +79,61 @@ app.use((err, req, res, next) => {
   });
 });
 
-// MongoDB connection and server startup
-const connectWithRetry = (retries = 5, delayMs = 5000) => {
+// Start server
+function startServer() {
+  const PORT = process.env.PORT || 5000;
+
+  if (process.env.NODE_ENV === 'production') {
+    // Render provides HTTPS automatically.
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`CareFlowAI production backend running on port ${PORT}`);
+    });
+  } else {
+    // Local development uses HTTPS certificates.
+    const options = {
+      key: fs.readFileSync(
+        path.join(__dirname, '../certs/localhost-key.pem')
+      ),
+      cert: fs.readFileSync(
+        path.join(__dirname, '../certs/localhost.pem')
+      )
+    };
+
+    https.createServer(options, app).listen(PORT, () => {
+      console.log(`CareFlowAI local HTTPS server running on port ${PORT}`);
+    });
+  }
+}
+
+// MongoDB connection
+async function connectWithRetry(retries = 5, delayMs = 5000) {
   const mongoUri = process.env.MONGO_URI;
 
   if (!mongoUri) {
-    console.error('MONGO_URI is missing in .env');
+    console.error('MONGO_URI is missing');
     process.exit(1);
   }
 
-  const attemptConnection = (remainingRetries) => {
-    mongoose.connect(mongoUri)
-      .then(() => {
-        console.log('MongoDB connected successfully');
+  for (let attempt = 0; attempt <= retries; attempt++) {
+    try {
+      await mongoose.connect(mongoUri);
+      console.log('MongoDB connected successfully');
 
-        const PORT = process.env.PORT || 5000;
+      startServer();
+      return;
+    } catch (err) {
+      console.error('MongoDB connection error:', err.message);
 
-        // app.listen(PORT, () => {
-        //   console.log(`CareFlowAI server running at http://localhost:${PORT}`);
-        // });
-      const options = {
-  key: fs.readFileSync(
-    path.join(__dirname, '../certs/localhost-key.pem')
-  ),
-  cert: fs.readFileSync(
-    path.join(__dirname, '../certs/localhost.pem')
-  )
-};
+      if (attempt === retries) {
+        console.error('All MongoDB connection retries exhausted.');
+        process.exit(1);
+      }
 
-https.createServer(options, app).listen(5000, () => {
-  console.log('HTTPS Backend running at https://localhost:5000');
-});
-      })
-      .catch((err) => {
-        console.error('MongoDB connection error:', err.message);
+      console.log(`Retrying in ${delayMs / 1000} seconds...`);
 
-        if (remainingRetries <= 0) {
-          console.error('All MongoDB connection retries exhausted.');
-          process.exit(1);
-        }
-
-        console.log(
-          `Retrying MongoDB connection in ${delayMs / 1000} seconds...`
-        );
-
-        setTimeout(() => {
-          attemptConnection(remainingRetries - 1);
-        }, delayMs);
-      });
-  };
-
-  attemptConnection(retries);
-};
+      await new Promise(resolve => setTimeout(resolve, delayMs));
+    }
+  }
+}
 
 connectWithRetry();
