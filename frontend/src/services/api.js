@@ -3,7 +3,10 @@ import axios from 'axios';
 // Base API URL. Empty in development (requests go through the Vite proxy);
 // set VITE_API_URL to the deployed backend origin in production, e.g.
 // VITE_API_URL=https://careflowai-backend.onrender.com
-const RAW_API_URL = (import.meta.env.VITE_API_URL || '').replace(/\/$/, '');
+const RAW_API_URL = (
+  import.meta.env.VITE_API_URL ||
+  'https://careflowai-backend.onrender.com'
+).replace(/\/$/, '');
 
 const API = axios.create({
   baseURL: `${RAW_API_URL}/api`
